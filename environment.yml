@@ -1,0 +1,8 @@
+name: aross-database-data-dictionary
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - jupyterlab
+  - xarray
+  - pyyaml
