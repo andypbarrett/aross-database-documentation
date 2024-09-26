@@ -1,6 +1,6 @@
 # Data dictionary for AROSS rain on snow database
 
-file:
+metadata:
   type: "station metadata"
   path: "metadata/aross.asos_stations.metadata.csv"
   fields:
@@ -45,7 +45,7 @@ file:
       valid_min: -100.
       valid_max: 4000.
       source: https://mesonet.agron.iastate.edu/ASOS/
-      record_begins - Date that station archive begins
+#      record_begins - Date that station archive begins
     - name: iem_network
       description: |
         IEM network identifier
@@ -109,10 +109,10 @@ file:
     - name: end_year
       description: last year of record in database
       datatype: integer
-file:
+hourly:
   type: "hourly observations"
   path: "hourly/{stid}.{date_start}to{date_end}.hourly.csv"
-  source:
+  source: ""
   fields:
     - name: datetime
       description: |
@@ -288,182 +288,147 @@ file:
         direction from north of wind vector from time of observation 
         to time of previous observation
 
-file:
+    - name: sog
+      standard_name: snow
+      description: |
+        indicates presence of snow on ground
+      datatype: bool
+      min_value: true
+      max_value: false
+      valid_min: true
+      valid_max: false
+      missing:
+      source: |
+        true if snow on ground identified for day in IMS Daily 
+        Northern Hemisphere Snow and Ice Analysis (10.7265/N52R3PMC) 
+        in 1 km product for 2014 to present or in 4 km product 
+        between 2004 to 2014.
+events:
   type: "event observations"
   path: "events/{stid}.{date_start}to{date_end}.event.csv"
-  source: "
+  source: ""
   fields:
-    - name: datetime
+    - name: start
       description: |
-        datetime for observation hour in local time
+        start datetime for event in local time
       datatype: datetime
 
-    - name: station
+    - name: start
       description: |
-        four letter station identifier from stid metadata/aross.asos_station.metadata.csv
-      datatype: string
+        timestamp for first hour of event in local time
+      datatype: datetime
 
-    - name: t2m
-      standard_name: air_temperature
+    - name: end
       description: |
-        air temperature at 2 meters above ground surface
-      datatype: float
-      units: degC
-      units_metadata: on_scale
-      min_value:
-      max_value:
-      valid_min:
-      valid_max:
-      missing:
-      source: arithmetic mean of t2m values in clean for hour preceding
-      
-    - name: d2m
-      standard_name: dew_point_temperature
-      description: |
-        dew point temperature of air at 2 meters above ground surface
-      datatype: float
-      units: degC
-      units_metadata: on_scale
-      min_value:
-      max_value:
-      valid_min:
-      valid_max:
-      missing:
-      source: arithmetic mean of d2m values in clean for hour preceding
+        timestamp for last hour of event in local time
+      datatype: datetime
 
-    - name: relh
-      standard_name: relative_humidity
+    - name: duration
       description: |
-        relative humidity of air at 2 meters above ground surface
-      datatype: float
-      units: 1
-      min_value:
-      max_value:
-      valid_min:
-      valid_max:
-      missing:
-      source: arithmetic mean of t2m values in clean for hour preceding
-
-    - name: mslp
-      standard_name: air_pressure_at_mean_sea_level
-      description: |
-        air pressure at sea level
-      datatype: float
-      units: hPa
-      min_value:
-      max_value:
-      valid_min:
-      valid_max:
-      missing:
-      source: arithmetic mean of t2m values in clean for hour preceding
-
-    - name: psurf
-      standard_name: surface_air_pressure
-      description: |
-        air pressure at ground level
-      datatype: float
-      units: hPa
-      min_value:
-      max_value:
-      valid_min:
-      valid_max:
-      missing:
-      source: arithmetic mean of t2m values in clean for hour preceding
-
-    - name: p01i
-      standard_name: precipitation_amount
-      description: |
-        total precipitation for the period from time of observation to time
-        of the previous hourly precipitation reset
-      datatype: float
-      units: mm
-      min_value:
-      max_value:
-      valid_min:
-      valid_max:
-      missing:
-      source: |
-        one hour precipitation for the period from the observation time 
-        to the time of the previous hourly precipitation reset
+        duration of event in hours 
+      datatype: int
 
     - name: UP
       description: |
-        unknown precipitation reported in METAR
-      datatype: bool
-      min_value: False
-      max_value: True
-      valid_min: False
-      valid_max: True
+        count of unknown precipitation reported during event
+      datatype: int
+      min_value: 0
+      max_value: 
+      valid_min: 0
+      valid_max: 
       missing:
       source: |
-        True if UP observed in period from time of observation to
-        time of previous observation
+        count of True values reported for contiguous precipitation event
 
     - name: RA
       description: |
-        liquid precipitation (rain) reported in METAR
-      datatype: bool
-      min_value: False
-      max_value: True
-      valid_min: False
-      valid_max: True
+        count of liquid precipitation (rain) reported during event
+      datatype: int
+      min_value: 0
+      max_value: 
+      valid_min: 0
+      valid_max: 
       missing:
       source: |
-        True if RA observed in period from time of observation to time of previous observation
+        count of True values reported for contiguous precipitation event
 
     - name: FZRA
       description: |
-        freezing precipitation reported in METAR
-      datatype: bool
-      min_value: false
-      max_value: true
-      valid_min: false
-      valid_max: true
+        count of freezing precipitation reported during event
+      datatype: int
+      min_value: 0
+      max_value: 
+      valid_min: 0
+      valid_max: 
       missing:
       source: |
-        True if FZRA observed in period from time of observation
-        to time of previous observation
+        count of True values reported for contiguous precipitation event
 
     - name: SOLID
       description: |
-        solid precipitation reported in METAR"
+        count of solid precipitation reported during event
+      datatype: int
+      min_value: 0
+      max_value: 
+      valid_min: 0
+      valid_max: 
+      missing:
+      source: |
+        count of True values reported for contiguous precipitation event
+        
+    - name: t2m_mean
+      standard_name: air_temperature
+      description: |
+        arithmetic mean of air temperature at 2 meters above ground surface
+        over duration of event
+      datatype: float
+      units: degC
+      units_metadata: on_scale
+      min_value:
+      max_value:
+      valid_min:
+      valid_max:
+      missing:
+      source: arithmetic mean of t2m values in hourly file for duration of event
+
+    - name: t2m_min
+      standard_name: air_temperature
+      description: |
+        minimum air temperature at 2 meters above ground surface for duration
+        of event
+      datatype: float
+      units: degC
+      units_metadata: on_scale
+      min_value:
+      max_value:
+      valid_min:
+      valid_max:
+      missing:
+      source: minimum of t2m values in hourly file for duration of event
+
+    - name: t2m_max
+      standard_name: air_temperature
+      description: |
+        maximum air temperature at 2 meters above ground surface for duration
+        of event
+      datatype: float
+      units: degC
+      units_metadata: on_scale
+      min_value:
+      max_value:
+      valid_min:
+      valid_max:
+      missing:
+      source: maximum of t2m values in hourly file for duration of event
+
+    - name: sog
+      standard_name: snow
+      description: |
+        indicates presence of snow on ground during event
       datatype: bool
-      min_value: false
-      max_value: true
-      valid_min: false
-      valid_max: true
+      min_value: true
+      max_value: false
+      valid_min: true
+      valid_max: false
       missing:
-      source: |
-        True if SN observed in period from time of observation 
-        to time of previous observation
-
-    - name: wspd
-      standard_name: wind_speed
-      description: |
-        wind speed at approximately 10 m above ground surface
-      datatype: float
-      units: m s-1
-      min_value:
-      max_value:
-      valid_min:
-      valid_max:
-      missing:
-      source: |
-        magnitude of mean of wind vector from time of observation
-        to time of previous observation
-
-    - name: drct
-      standard_name: wind_to_direction
-      description: |
-        wind direction at approximately 10 m above ground surface
-      datatype: float
-      units: degree
-      min_value:
-      max_value:
-      valid_min:
-      valid_max:
-      missing:
-      source: |
-        direction from north of wind vector from time of observation 
-        to time of previous observation
-
+      source: true if snow on ground identified for any hour during event
