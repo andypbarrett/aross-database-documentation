@@ -421,6 +421,19 @@ events:
       missing:
       source: maximum of t2m values in hourly file for duration of event
 
+    - name: precip
+      standard_name: precipitation_amount
+      description: | 
+        total precipitation measured during event
+      datatype: float
+      units: mm
+      min_value: 0.0
+      max_value: 15000
+      valid_min: 0.0
+      valid_max: 15000
+      missing:
+      source: p01i from hourly files
+
     - name: sog
       standard_name: snow
       description: |
